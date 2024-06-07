@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     Camera cam;
 
-    public CatThrow catThrow;
+    public Slime slime;
     public Trajectory trajectory;
     [SerializeField] float pushForce = 4f;
 
@@ -30,11 +30,10 @@ public class GameManager : MonoBehaviour
     Vector2 force;
     float distance;
 
-    //---------------------------------------
     void Start()
     {
         cam = Camera.main;
-        catThrow.DesactivateRb();
+        slime.DesactivateRb();
     }
 
     void Update()
@@ -56,10 +55,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //-Drag--------------------------------------
+
     void OnDragStart()
     {
-        catThrow.DesactivateRb();
+        slime.DesactivateRb();
         startPoint = cam.ScreenToWorldPoint(Input.mousePosition);
 
         trajectory.Show();
@@ -72,19 +71,17 @@ public class GameManager : MonoBehaviour
         direction = (startPoint - endPoint).normalized;
         force = direction * distance * pushForce;
 
-        //just for debug
         Debug.DrawLine(startPoint, endPoint);
 
 
-        trajectory.UpdateDots(catThrow.pos, force);
+        trajectory.UpdateDots(slime.pos, force);
     }
 
     void OnDragEnd()
     {
-        //push the ball
-        catThrow.ActivateRb();
+        slime.ActivateRb();
 
-        catThrow.Push(force);
+        slime.Push(force);
 
         trajectory.Hide();
     }

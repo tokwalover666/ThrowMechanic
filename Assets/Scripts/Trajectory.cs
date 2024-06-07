@@ -2,30 +2,25 @@ using UnityEngine;
 
 public class Trajectory : MonoBehaviour
 {
-    [SerializeField] int dotsNumber = 10;
+    [SerializeField] int dotsNumber;
     [SerializeField] GameObject dotsParent;
     [SerializeField] GameObject dotPrefab;
-    [SerializeField] float dotSpacing = 0.1f;
-    [SerializeField][Range(0.01f, 0.3f)] float dotMinScale = 0.1f;
-    [SerializeField][Range(0.3f, 1f)] float dotMaxScale = 1f;
+    [SerializeField] float dotSpacing;
+    [SerializeField][Range(0.01f, 0.3f)] float dotMinScale;
+    [SerializeField][Range(0.3f, 1f)] float dotMaxScale;
 
     Transform[] dotsList;
 
     Vector2 pos;
+
     float timeStamp;
+
 
     void Start()
     {
-        if (dotsParent == null || dotPrefab == null)
-        {
-            Debug.LogError("Dots parent or dot prefab is not assigned.");
-            return;
-        }
 
-        // Hide trajectory at the start
         Hide();
 
-        // Prepare dots
         PrepareDots();
     }
 
@@ -39,9 +34,10 @@ public class Trajectory : MonoBehaviour
 
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform;
-            dotsList[i].localScale = Vector3.one * scale;
+            dotsList[i] = Instantiate(dotPrefab, null).transform;
+            dotsList[i].parent = dotsParent.transform;
 
+            dotsList[i].localScale = Vector3.one * scale;
             if (scale > dotMinScale)
                 scale -= scaleFactor;
         }
@@ -55,6 +51,7 @@ public class Trajectory : MonoBehaviour
             pos.x = (ballPos.x + forceApplied.x * timeStamp);
             pos.y = (ballPos.y + forceApplied.y * timeStamp) - (Physics2D.gravity.magnitude * timeStamp * timeStamp) / 2f;
 
+
             dotsList[i].position = pos;
             timeStamp += dotSpacing;
         }
@@ -62,13 +59,11 @@ public class Trajectory : MonoBehaviour
 
     public void Show()
     {
-        Debug.Log("Showing trajectory.");
         dotsParent.SetActive(true);
     }
 
     public void Hide()
     {
-        Debug.Log("Hiding trajectory.");
         dotsParent.SetActive(false);
     }
 }
